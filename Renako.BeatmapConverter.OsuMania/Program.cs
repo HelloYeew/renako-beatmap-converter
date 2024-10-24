@@ -34,8 +34,7 @@ void ConvertBeatmap(int beatmapSetId)
 
     // Calculate BPM\
     double maxBpm = firstBeatmap.TimingPoints.Max(t => t.BPM);
-    double mostCommonBpm = firstBeatmap.TimingPoints.GroupBy(t => t.BPM).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
-    int bpm = (int)(maxBpm + mostCommonBpm);
+    int bpm = (int)(1 / maxBpm * 1000 * 60);
 
     // Check is beatmap have video
 
