@@ -20,6 +20,8 @@ JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions()
 
 void ConvertBeatmap(int beatmapSetId)
 {
+    Console.WriteLine($"Converting beatmapset {beatmapSetId}...");
+    
     // Create new Renako BeatmapSet and Beatmap object
     List<DbBeatmap> allOsuBeatmap = osuDb.Beatmaps.FindAll(b => b.BeatmapSetId == beatmapSetId);
     allOsuBeatmap.RemoveAll(b => b.Ruleset != Ruleset.Mania);
@@ -194,7 +196,6 @@ if (Console.ReadLine() == "all")
 {
     foreach (int beatmapSetId in allBeatmapSetId)
     {
-        Console.WriteLine($"Converting beatmapset {beatmapSetId}...");
         ConvertBeatmap(beatmapSetId);
     }
 }
@@ -204,5 +205,9 @@ else
     if (!allBeatmapSetId.Contains(beatmapSetId))
     {
         Console.WriteLine("Invalid beatmapset id.");
+    }
+    else
+    {
+        ConvertBeatmap(beatmapSetId);
     }
 }
