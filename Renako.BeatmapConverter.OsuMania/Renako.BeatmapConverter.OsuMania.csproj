@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="OsuParsers" Version="1.7.1" />
+      <PackageReference Include="OsuParsers" Version="1.7.2" />
       <PackageReference Include="z440.atl.core" Version="6.6.0" />
     </ItemGroup>
 
