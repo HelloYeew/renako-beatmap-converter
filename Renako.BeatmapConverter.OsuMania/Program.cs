@@ -10,7 +10,7 @@ using Renako.Game.Beatmaps;
 using Renako.Game.Utilities;
 
 // %APPDATA%\Renako\beatmaps
-string renakoBeatmapsFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Renako", "beatmaps");
+string renakoBeatmapsFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RenakoDevelopment", "beatmaps");
 OsuDatabase osuDb = DatabaseDecoder.DecodeOsu(OsuStableLocation.DefaultDatabasePath);
 JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions()
 {
@@ -22,9 +22,14 @@ void ConvertBeatmap(int beatmapSetId)
 {
     Console.WriteLine($"Converting beatmapset {beatmapSetId}...");
     
+    if (beatmapSetId < 0)
+    {
+        Console.WriteLine("Invalid beatmapset state.");
+        return;
+    }
+    
     // Create new Renako BeatmapSet and Beatmap object
     List<DbBeatmap> allOsuBeatmap = osuDb.Beatmaps.FindAll(b => b.BeatmapSetId == beatmapSetId);
-    allOsuBeatmap.RemoveAll(b => b.Ruleset != Ruleset.Mania);
     if (allOsuBeatmap.Count == 0)
     {
         Console.WriteLine("Beatmapset doesn't have any mania beatmap.");
@@ -68,6 +73,11 @@ void ConvertBeatmap(int beatmapSetId)
     for (int i = 0; i < allOsuBeatmap.Count; i++)
     {
         DbBeatmap beatmap = allOsuBeatmap[i];
+        if (beatmap.Ruleset != Ruleset.Mania)
+        {
+            Console.WriteLine($"Beatmap {beatmap.BeatmapId} is not a mania beatmap, skipping.");
+            continue;
+        }
         // Check circle size for mania column
         if (Math.Abs(beatmap.CircleSize - 4) > 0.1)
         {
@@ -169,7 +179,7 @@ void ConvertBeatmap(int beatmapSetId)
 List<string> allBeatmapSet = new List<string>();
 List<int> allBeatmapSetId = new List<int>();
 
-foreach (var beatmap in osuDb.Beatmaps.FindAll(b => b.Ruleset == Ruleset.Mania))
+foreach (var beatmap in osuDb.Beatmaps)
 {
     string easyToRead = $"{beatmap.BeatmapSetId} {beatmap.Artist} - {beatmap.Title}";
     if (!allBeatmapSet.Contains(easyToRead))
